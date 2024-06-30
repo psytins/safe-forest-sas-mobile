@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'auth_service.dart';
 import 'home_page.dart';
 
@@ -30,12 +28,11 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (success) {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
       } else {
-        // Show login error
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Login failed')),
         );

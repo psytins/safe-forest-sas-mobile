@@ -4,14 +4,28 @@ import 'about_page.dart'; // Import the AboutPage
 import 'login_page.dart';
 import 'main.dart';
 import 'model/warning.dart'; // Import your Warning model
+import 'auth_service.dart';
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
+
+
 }
 
 class _HomePageState extends State<HomePage> {
   Warning? exampleWarning;
+
+  final AuthService _authService = AuthService();
+
+  void _logout() async {
+    await _authService.logout();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+          (Route<dynamic> route) => false,
+    );
+  }
 
   @override
   void initState() {
@@ -30,6 +44,8 @@ class _HomePageState extends State<HomePage> {
       exampleWarning = null; // Dismiss the warning by setting exampleWarning to null
     });
   }
+
+
 
   void _showLogoutConfirmationDialog(BuildContext context) {
     showDialog(
@@ -55,6 +71,7 @@ class _HomePageState extends State<HomePage> {
                   MaterialPageRoute(builder: (context) => LoginPage()),
                       (Route<dynamic> route) => false,
                 );
+                _logout();
               },
             ),
           ],
