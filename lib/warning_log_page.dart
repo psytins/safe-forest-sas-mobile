@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'auth_service.dart';
 import 'model/warning.dart';
 import 'package:http/http.dart' as http;
@@ -15,6 +17,9 @@ class _WarningLogPageState extends State<WarningLogPage> {
   List<Warning> warnings = [];
   bool isLoading = true;
   String? errorMessage;
+
+  // Scroll controller for the ListView
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -80,6 +85,13 @@ class _WarningLogPageState extends State<WarningLogPage> {
           warnings = fetchedWarnings;
           isLoading = false;
         });
+
+        // Scroll to the top of the list when new data is fetched
+        _scrollController.animateTo(
+          0.0,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
       } else {
         setState(() {
           errorMessage = 'Failed to fetch warnings: ${response.body}';
@@ -100,63 +112,39 @@ class _WarningLogPageState extends State<WarningLogPage> {
       appBar: AppBar(
         title: Text('Warning Log'),
       ),
+      backgroundColor: Color(0xFF22252E), // Set background color here
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : errorMessage != null
           ? Center(child: Text(errorMessage!))
           : ListView(
+        controller: _scrollController,
         children: warnings.map((warning) => WarningTile(warning: warning)).toList(),
       ),
     );
   }
 }
 
-class WarningTile extends StatefulWidget {
+class WarningTile extends StatelessWidget {
   final Warning warning;
 
   WarningTile({required this.warning});
 
   @override
-  _WarningTileState createState() => _WarningTileState();
-}
-
-class _WarningTileState extends State<WarningTile> {
-  bool _isExpanded = false;
-
-  @override
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.all(10.0),
-      child: ExpansionPanelList(
-        expansionCallback: (int index, bool isExpanded) {
-          setState(() {
-            _isExpanded = !_isExpanded;
-          });
-        },
+      child: ExpansionTile(
+        title: Text('Camera ID: ${warning.cameraId}'),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Date: ${DateFormat.yMMMd().add_jm().format(warning.date)}'),
+            Text('Sensitivity: ${warning.sensitivity}'),
+          ],
+        ),
         children: [
-          ExpansionPanel(
-            isExpanded: _isExpanded,
-            headerBuilder: (BuildContext context, bool isExpanded) {
-              return ListTile(
-                title: Text('Camera ID: ${widget.warning.cameraId}'),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Date: ${widget.warning.date}'),
-                    Text('Sensitivity: ${widget.warning.sensitivity}'), // Display sensitivity here
-                  ],
-                ),
-              );
-            },
-            body: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(10.0),
-                  child: Image.network(widget.warning.imageUrl),
-                ),
-              ],
-            ),
-          ),
+          Image.network(warning.imageUrl),
         ],
       ),
     );

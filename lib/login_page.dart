@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
 import 'home_page.dart';
+import 'about_page.dart'; // Import the AboutPage
 
 class LoginPage extends StatefulWidget {
   @override
@@ -38,6 +39,13 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     }
+  }
+
+  void _navigateToAboutPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AboutPage()),
+    );
   }
 
   @override
@@ -78,6 +86,11 @@ class _LoginPageState extends State<LoginPage> {
               ElevatedButton(
                 onPressed: _login,
                 child: Text('Login'),
+              ),
+              SizedBox(height: 10),
+              TextButton(
+                onPressed: _navigateToAboutPage, // Navigate to AboutPage on button press
+                child: Text('About'),
               ),
             ],
           ),
