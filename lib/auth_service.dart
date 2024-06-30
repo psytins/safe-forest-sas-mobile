@@ -6,8 +6,10 @@ class AuthService {
   static const String baseUrl = 'http://192.168.1.177:8080';
   final storage = FlutterSecureStorage();
 
-  Future<void> storeToken(String token) async {
+  Future<void> storeToken(String token, String userID) async {
+    print('Storing token and userID: $userID');
     await storage.write(key: 'token', value: token);
+    await storage.write(key: 'userID', value: userID);
   }
 
   Future<String?> getToken() async {
@@ -16,6 +18,13 @@ class AuthService {
 
   Future<void> deleteToken() async {
     await storage.delete(key: 'token');
+    await storage.delete(key: 'userID');
+  }
+
+  Future<String?> getUserId() async {
+    String? userID = await storage.read(key: 'userID');
+    print('Retrieved userID: $userID');
+    return userID;
   }
 
   Future<bool> login(String email, String password) async {
@@ -35,16 +44,18 @@ class AuthService {
         final responseData = jsonDecode(response.body);
         print('Response data: $responseData');
 
-        if (responseData.containsKey('token')) {
+        if (responseData.containsKey('token') && responseData.containsKey('userID')) {
           final token = responseData['token'];
-          if (token != null) {
-            await storeToken(token);
+          final userId = responseData['userID'].toString(); // Convert userID to string
+
+          if (token != null && userId != null) {
+            await storeToken(token, userId);
             return true; // Login successful
           } else {
-            print('Token is null in response');
+            print('Token or UserID is null in response');
           }
         } else {
-          print('Token key is missing in response');
+          print('Token or UserID key is missing in response');
         }
       } else {
         print('Login failed with status code: ${response.statusCode}');
@@ -56,8 +67,7 @@ class AuthService {
     }
   }
 
-Future<void> logout() async {
+  Future<void> logout() async {
     await storage.delete(key: 'token');
   }
-
 }

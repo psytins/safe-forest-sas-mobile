@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
     exampleWarning = Warning(
       cameraId: 'Camera 1',
       date: '2024-06-25',
-      sensitivity: 'High',
+      sensitivity: 95,
       imageUrl: 'https://via.placeholder.com/150',
     );
   }
