@@ -155,8 +155,8 @@ class _HomePageState extends State<HomePage> {
           child: exampleWarning != null
               ? Center( // Wrap with Center to horizontally and vertically center the content
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.7, // 70% of screen width
-              height: MediaQuery.of(context).size.height * 0.5,
+              width: MediaQuery.of(context).size.width * 0.8, // 70% of screen width
+              height: MediaQuery.of(context).size.height * 0.65,
               padding: EdgeInsets.all(16.0),
               margin: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -184,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Container(
                     padding: EdgeInsets.all(10.0),
-                    height: 150, // Adjust the height as per your requirement
+                    height: 275, // Adjust the height as per your requirement
                     child: Image.network(exampleWarning!.imageUrl),
                   ),
                   SizedBox(height: 10),
