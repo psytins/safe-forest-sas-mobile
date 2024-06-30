@@ -111,6 +111,7 @@ class _WarningLogPageState extends State<WarningLogPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Warning Log'),
+        backgroundColor: Color(0xFFC0D966),
       ),
       backgroundColor: Color(0xFF22252E), // Set background color here
       body: isLoading
@@ -132,20 +133,23 @@ class WarningTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container( // Wrap Card with Container
       margin: EdgeInsets.all(10.0),
-      child: ExpansionTile(
-        title: Text('Camera ID: ${warning.cameraId}'),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      child: Card(
+        color: Color(0xFFF2F2F2), // Set background color to #C0D966
+        child: ExpansionTile(
+          title: Text('Camera ID: ${warning.cameraId}'),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Date: ${DateFormat.yMMMd().add_jm().format(warning.date)}'),
+              Text('Sensitivity: ${warning.sensitivity}'),
+            ],
+          ),
           children: [
-            Text('Date: ${DateFormat.yMMMd().add_jm().format(warning.date)}'),
-            Text('Sensitivity: ${warning.sensitivity}'),
+            Image.network(warning.imageUrl),
           ],
         ),
-        children: [
-          Image.network(warning.imageUrl),
-        ],
       ),
     );
   }

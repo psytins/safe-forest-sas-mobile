@@ -8,46 +8,50 @@ class AboutPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('About'),
+        backgroundColor: Color(0xFFC0D966),
       ),
-      body: Center( // Use Center widget to center the content
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: RichText(
-            textAlign: TextAlign.center, // Center the text
-            text: TextSpan(
-              text: 'This app was developed as a companion to the SafeForest service available ',
-              style: TextStyle(
-                color: Colors.black, // Set text color to black
-                fontSize: 20.0, // Reduce the text size
-                decoration: TextDecoration.none, // Remove underline
+      body: Container( // Wrap Center widget with Container to apply background color
+        color: Color(0xFF22252E), // Set background color to #22252E
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: 'This app was developed as a companion to the SafeForest service available ',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.0,
+                  decoration: TextDecoration.none,
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: 'here',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 20.0,
+                      decoration: TextDecoration.none,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () async {
+                        try {
+                          await _launchURL();
+                        } catch (e) {
+                          print('Could not launch URL: $e');
+                          _showErrorDialog(context);
+                        }
+                      },
+                  ),
+                  TextSpan(
+                    text: ' and is not meant to be used independently.',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
+                ],
               ),
-              children: <TextSpan>[
-                TextSpan(
-                  text: 'here',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 20.0,
-                    decoration: TextDecoration.none,
-                  ),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () async {
-                      try {
-                        await _launchURL();
-                      } catch (e) {
-                        print('Could not launch URL: $e');
-                        _showErrorDialog(context);
-                      }
-                    },
-                ),
-                TextSpan(
-                  text: ' and is not meant to be used independently.',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20.0,
-                    decoration: TextDecoration.none,
-                  ),
-                ),
-              ],
             ),
           ),
         ),
@@ -57,7 +61,7 @@ class AboutPage extends StatelessWidget {
 
   Future<void> _launchURL() async {
     const url = 'https://www.google.com';
-    if (!await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication)) {
+    if (!await launch(url)) {
       throw 'Could not launch $url';
     }
   }

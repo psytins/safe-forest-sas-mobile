@@ -81,18 +81,18 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
+        backgroundColor: Color(0xFFC0D966),
       ),
+      backgroundColor: Color(0xFF22252E), // Set background color to #22252E
       drawer: Drawer(
         child: Container(
-          decoration: BoxDecoration(
-            color: Color(0xFF22252E), // Set background color to #22252E
-          ),
+          color: Color(0xFF22252E), // Set drawer background color to #22252E
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
               DrawerHeader(
                 decoration: BoxDecoration(
-                  color: Color(0xFFC0D966), // Set background color to #22252E
+                  color: Color(0xFFC0D966), // Set drawer header background color to #C0D966
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -149,34 +149,62 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: Center(
-        child: exampleWarning != null
-            ? Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Latest Warning'),
-            ListTile(
-              title: Text('Camera ID: ${exampleWarning!.cameraId}'),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: Container(
+        color: Color(0xFF22252E), // Set container background color to #22252E
+        child: Center(
+          child: exampleWarning != null
+              ? Center( // Wrap with Center to horizontally and vertically center the content
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.7, // 70% of screen width
+              height: MediaQuery.of(context).size.height * 0.5,
+              padding: EdgeInsets.all(16.0),
+              margin: EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.white, // Set warning details container background color to white
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Date: ${exampleWarning!.date}'),
-                  Text('Sensitivity: ${exampleWarning!.sensitivity}'),
+                  Text(
+                    'Latest Warning',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  //SizedBox(height: 10),
+                  ListTile(
+                    title: Text('Camera ID: ${exampleWarning!.cameraId}'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Date: ${exampleWarning!.date}'),
+                        Text('Sensitivity: ${exampleWarning!.sensitivity}'),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(10.0),
+                    height: 150, // Adjust the height as per your requirement
+                    child: Image.network(exampleWarning!.imageUrl),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: dismissWarning,
+                    child: Text('Dismiss'),
+                  ),
                 ],
               ),
             ),
-            Container(
-              padding: EdgeInsets.all(10.0),
-              child: Image.network(exampleWarning!.imageUrl),
+          )
+              : Center( // Center the text if there's no warning
+            child: Text(
+              'The latest warning will display here.',
+              style: TextStyle(color: Colors.white), // Set text color to white
             ),
-            ElevatedButton(
-              onPressed: dismissWarning,
-              child: Text('Dismiss'),
-            ),
-          ],
-        )
-            : Text('No warnings to display'), // Display if there's no warning
+          ),
+        ),
       ),
+
     );
   }
 }
