@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 
 class Warning {
   final String cameraId;
-  final DateTime date; // Change type to DateTime
+  final DateTime date;
   final int sensitivity;
   final String imageUrl;
 
@@ -15,10 +15,10 @@ class Warning {
 
   factory Warning.fromJson(Map<String, dynamic> json) {
     // Parse date string into DateTime object
-    DateTime parsedDate = DateTime.parse(json['date']);
+    DateTime parsedDate = DateTime.parse(json['date']).toLocal();
 
     return Warning(
-      cameraId: json['camera']['camera_name'], // Convert to String
+      cameraId: json['camera']['camera_name'],
       date: parsedDate,
       sensitivity: json['camera']['sensitivity'] ?? 0,
       imageUrl: json['imageUrl'] ?? '',
@@ -28,7 +28,7 @@ class Warning {
   Map<String, dynamic> toJson() {
     return {
       'cameraId': cameraId,
-      'date': date.toIso8601String(), // Convert DateTime back to ISO 8601 string if needed
+      'date': date.toIso8601String(),
       'sensitivity': sensitivity,
       'imageUrl': imageUrl,
     };

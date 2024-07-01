@@ -14,10 +14,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Example warning data
-  Warning? exampleWarning;
+  Warning? _latestWarning;
   ApiService _apiService = ApiService();
   String? _userId;
+  String? _authToken;
   List<dynamic>? _notifications;
   Timer? _timer;
   final AuthService _authService = AuthService();
@@ -34,23 +34,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // Set exampleWarning initially with mock data
-    exampleWarning = Warning(
-      cameraId: 'Camera 1',
-      date: DateTime.now(),
-      sensitivity: 95,
-      imageUrl: 'https://via.placeholder.com/150',
-    );
+    getTokenAndFetchWarnings();
     _fetchNotifications();
-    // Set up a timer to fetch notifications every 2 seconds
     _timer = Timer.periodic(Duration(seconds: 2), (timer) {
       _fetchNotifications();
-    });
-  }
-
-  void dismissWarning() {
-    setState(() {
-      exampleWarning = null;
     });
   }
 
@@ -60,26 +47,50 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  Future<void> getTokenAndFetchWarnings() async {
+    try {
+      _authToken = await _authService.getToken();
+      _userId = await _authService.getUserId();
+      if (_authToken != null && _userId != null) {
+        await _fetchWarnings(_userId!, _authToken!);
+      }
+    } catch (e) {
+      print('Error fetching warnings: $e');
+    }
+  }
+
+  Future<void> _fetchWarnings(String userId, String authToken) async {
+    try {
+      List<Warning> warnings = await _apiService.fetchWarnings(userId, authToken);
+      if (warnings.isNotEmpty) {
+        setState(() {
+          _latestWarning = warnings.first; // Assuming the first one is the latest
+        });
+        NotificationService().showNotification(title: 'New Detection!', body: 'Press to go to app.');
+      }
+    } catch (e) {
+      print('Error fetching warnings: $e');
+    }
+  }
+
   void _fetchNotifications() async {
     try {
       _userId = await _authService.getUserId();
       if (_userId != null) {
         List<dynamic> newNotifications = await _apiService.fetchNotifications(_userId!);
-
-        // Compare lengths to detect changes
         if (_notifications == null || _notifications!.length != newNotifications.length) {
           setState(() {
             _notifications = newNotifications;
           });
-          // Show notification when updates are detected
+          print(_notifications);
           NotificationService().showNotification(title: 'New Detection!', body: 'Press to go to app.');
+          getTokenAndFetchWarnings(); // Fetch the latest warning when notifications update
         }
       }
     } catch (e) {
-      print('Error fetching notifications: $e');
+      print('Error fetching notifications');
     }
   }
-
 
   void _showLogoutConfirmationDialog(BuildContext context) {
     showDialog(
@@ -99,12 +110,6 @@ class _HomePageState extends State<HomePage> {
               child: Text('Log Out'),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
-                // Perform logout actions here, such as navigating to login page
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                      (Route<dynamic> route) => false,
-                );
                 _logout();
               },
             ),
@@ -190,10 +195,10 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         color: Color(0xFF22252E), // Set container background color to #22252E
         child: Center(
-          child: exampleWarning != null
-              ? Center( // Wrap with Center to horizontally and vertically center the content
+          child: _latestWarning != null
+              ? Center(
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.8, // 70% of screen width
+              width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
               height: MediaQuery.of(context).size.height * 0.65,
               padding: EdgeInsets.all(16.0),
               margin: EdgeInsets.all(16.0),
@@ -209,35 +214,27 @@ class _HomePageState extends State<HomePage> {
                     'Latest Warning',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  //SizedBox(height: 10),
                   ListTile(
-                    title: Text('Camera ID: ${exampleWarning!.cameraId}'),
+                    title: Text('Camera Name: ${_latestWarning!.cameraId}'),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Date: ${exampleWarning!.date}'),
-                        Text('Sensitivity: ${exampleWarning!.sensitivity}'),
+                        Text('Date: ${_latestWarning!.date}'),
+                        Text('Sensitivity: ${_latestWarning!.sensitivity}'),
                       ],
                     ),
                   ),
                   Container(
                     padding: EdgeInsets.all(10.0),
                     height: 275, // Adjust the height as per your requirement
-                    child: Image.network(exampleWarning!.imageUrl),
+                    child: Image.network(_latestWarning!.imageUrl),
                   ),
                   SizedBox(height: 10),
-                  /*ElevatedButton(
-                    onPressed: (){
-                  NotificationService()
-                      .showNotification(title: 'Sample title', body: 'It works!');
-                  },
-                    child: Text('Dismiss'),
-                  ),*/
                 ],
               ),
             ),
           )
-              : Center( // Center the text if there's no warning
+              : Center(
             child: Text(
               'The latest warning will display here.',
               style: TextStyle(color: Colors.white), // Set text color to white
@@ -245,7 +242,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-
     );
   }
 }

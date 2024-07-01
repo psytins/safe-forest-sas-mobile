@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:safe_forest_mobile/model/warning.dart';
 
 class ApiService {
   static const String _baseUrl = 'http://192.168.1.182:8080/api';
@@ -42,5 +43,29 @@ class ApiService {
       throw Exception('Failed to load notifications');
     }
   }
-// Implement other methods for update and delete if needed
+
+  Future<List<Warning>> fetchWarnings(String userId, String authToken) async {
+    final url = Uri.parse('$_baseUrl/camera/list-last-detection');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      },
+      body: jsonEncode({'userID': userId}),
+    );
+
+    if (response.statusCode == 200) {
+      final decodedData = jsonDecode(response.body);
+      final List<dynamic> detections = decodedData['detections'];
+      List<Warning> fetchedWarnings = detections.map((item) => Warning.fromJson(item)).toList();
+
+      // Sort warnings by date in descending order
+      fetchedWarnings.sort((a, b) => b.date.compareTo(a.date));
+
+      return fetchedWarnings;
+    } else {
+      throw Exception('Failed to fetch warnings: ${response.body}');
+    }
+  }
 }

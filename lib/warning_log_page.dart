@@ -77,9 +77,9 @@ class _WarningLogPageState extends State<WarningLogPage> {
         final List<dynamic> detections = decodedData['detections'];
         List<Warning> fetchedWarnings = detections.map((item) => Warning.fromJson(item)).toList();
 
-        fetchedWarnings.forEach((warning) {
+        /*fetchedWarnings.forEach((warning) {
           print('Fetched Warning: ${warning.cameraId}, ${warning.date}, ${warning.imageUrl}');
-        });
+        });*/
 
         setState(() {
           warnings = fetchedWarnings;
