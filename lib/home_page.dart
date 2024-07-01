@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:safe_forest_mobile/service/notification_service.dart';
 import 'service/api_service.dart';
 import 'service/auth_service.dart';
@@ -64,7 +65,7 @@ class _HomePageState extends State<HomePage> {
       List<Warning> warnings = await _apiService.fetchWarnings(userId, authToken);
       if (warnings.isNotEmpty) {
         setState(() {
-          _latestWarning = warnings.first; // Assuming the first one is the latest
+          _latestWarning = warnings.first;
         });
         NotificationService().showNotification(title: 'New Detection!', body: 'Press to go to app.');
       }
@@ -219,7 +220,7 @@ class _HomePageState extends State<HomePage> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Date: ${_latestWarning!.date}'),
+                        Text('Date: ${DateFormat.yMMMd().add_jm().format(_latestWarning!.date)}'),
                         Text('Sensitivity: ${_latestWarning!.sensitivity}'),
                       ],
                     ),
@@ -227,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                   Container(
                     padding: EdgeInsets.all(10.0),
                     height: 275, // Adjust the height as per your requirement
-                    child: Image.network(_latestWarning!.imageUrl),
+                    child: Image.memory(_latestWarning!.image),
                   ),
                   SizedBox(height: 10),
                 ],

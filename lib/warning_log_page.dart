@@ -143,7 +143,7 @@ class WarningTile extends StatelessWidget {
             ],
           ),
           children: [
-            Image.network(warning.imageUrl),
+            Image.memory(warning.image),
           ],
         ),
       ),
