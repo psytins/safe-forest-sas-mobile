@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:safe_forest_mobile/model/warning.dart';
 
 class ApiService {
-  static const String _baseUrl = 'http://192.168.1.177:8080/api'; //Change to production IP accordingly
+  static const String _baseUrl = 'https://safeforest-prod.azurewebsites.net/api'; //Change to production IP accordingly
 
   Future<List<dynamic>> fetchUsers() async {
     final response = await http.get(Uri.parse('$_baseUrl/users'));

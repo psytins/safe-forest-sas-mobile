@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
-  static const String baseUrl = 'http://192.168.1.177:8080';
+  static const String baseUrl = 'https://safeforest-prod.azurewebsites.net';
   final storage = FlutterSecureStorage();
 
   Future<void> storeToken(String token, String userID) async {

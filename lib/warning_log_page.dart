@@ -59,7 +59,7 @@ class _WarningLogPageState extends State<WarningLogPage> {
 
   Future<void> fetchWarnings(String userId, String authToken) async {
     try {
-      final url = Uri.parse('http://192.168.1.177:8080/api/camera/list-last-detection');
+      final url = Uri.parse('http://https://safeforest-prod.azurewebsites.net/api/camera/list-last-detection');
       final response = await http.post(
         url,
         headers: {
