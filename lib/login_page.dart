@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'auth_service.dart';
+import 'service/auth_service.dart';
 import 'home_page.dart';
 import 'about_page.dart'; // Import the AboutPage
 

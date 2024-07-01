@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'auth_service.dart';
+import 'package:safe_forest_mobile/service/notification_service.dart';
+import 'service/api_service.dart';
+import 'service/auth_service.dart';
 import 'login_page.dart';
 import 'model/warning.dart';
 import 'warning_log_page.dart';
@@ -13,7 +16,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // Example warning data
   Warning? exampleWarning;
-
+  ApiService _apiService = ApiService();
+  String? _userId;
+  List<dynamic>? _notifications;
+  Timer? _timer;
   final AuthService _authService = AuthService();
 
   void _logout() async {
@@ -35,6 +41,11 @@ class _HomePageState extends State<HomePage> {
       sensitivity: 95,
       imageUrl: 'https://via.placeholder.com/150',
     );
+    _fetchNotifications();
+    // Set up a timer to fetch notifications every 2 seconds
+    _timer = Timer.periodic(Duration(seconds: 2), (timer) {
+      _fetchNotifications();
+    });
   }
 
   void dismissWarning() {
@@ -42,6 +53,37 @@ class _HomePageState extends State<HomePage> {
       exampleWarning = null;
     });
   }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _fetchNotifications() async {
+    try {
+      _userId = await _authService.getUserId();
+      if (_userId != null) {
+        List<dynamic> newNotifications = await _apiService.fetchNotifications(_userId!);
+
+        // Compare lengths to detect changes
+        if (_notifications == null || _notifications!.length != newNotifications.length) {
+          setState(() {
+            _notifications = newNotifications;
+          });
+          print('Notifications updated: $_notifications');
+
+          // Show notification when updates are detected
+          NotificationService().showNotification(title: 'Sample title', body: 'It works!');
+
+          print("tried to do notification");
+        }
+      }
+    } catch (e) {
+      print('Error fetching notifications: $e');
+    }
+  }
+
 
   void _showLogoutConfirmationDialog(BuildContext context) {
     showDialog(
@@ -188,10 +230,13 @@ class _HomePageState extends State<HomePage> {
                     child: Image.network(exampleWarning!.imageUrl),
                   ),
                   SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: dismissWarning,
+                  /*ElevatedButton(
+                    onPressed: (){
+                  NotificationService()
+                      .showNotification(title: 'Sample title', body: 'It works!');
+                  },
                     child: Text('Dismiss'),
-                  ),
+                  ),*/
                 ],
               ),
             ),

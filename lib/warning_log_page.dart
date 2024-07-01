@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'auth_service.dart';
+import 'service/auth_service.dart';
 import 'model/warning.dart';
 import 'package:http/http.dart' as http;
 

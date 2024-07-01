@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
-  static const String baseUrl = 'http://192.168.1.177:8080';
+  static const String baseUrl = 'http://192.168.1.182:8080';
   final storage = FlutterSecureStorage();
 
   Future<void> storeToken(String token, String userID) async {
@@ -22,9 +22,7 @@ class AuthService {
   }
 
   Future<String?> getUserId() async {
-    String? userID = await storage.read(key: 'userID');
-    print('Retrieved userID: $userID');
-    return userID;
+    return await storage.read(key: 'userID');
   }
 
   Future<bool> login(String email, String password) async {

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String _baseUrl = 'http://your-server-ip:8080/api';
+  static const String _baseUrl = 'http://192.168.1.182:8080/api';
 
   Future<List<dynamic>> fetchUsers() async {
     final response = await http.get(Uri.parse('$_baseUrl/users'));
@@ -28,5 +28,19 @@ class ApiService {
     }
   }
 
+  Future<List<dynamic>> fetchNotifications(String userId) async {
+    final url = Uri.parse('$_baseUrl/auth/list-notification');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'userID': userId}),
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body)['notifications'];
+    } else {
+      throw Exception('Failed to load notifications');
+    }
+  }
 // Implement other methods for update and delete if needed
 }

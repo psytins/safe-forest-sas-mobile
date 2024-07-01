@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'auth_service.dart';
+import 'package:safe_forest_mobile/service/notification_service.dart';
+import 'service/auth_service.dart';
 import 'home_page.dart';
 import 'login_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  NotificationService().initNotification();
   runApp(MyApp());
 }
 
