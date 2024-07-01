@@ -83,8 +83,7 @@ class _HomePageState extends State<HomePage> {
           setState(() {
             _notifications = newNotifications;
           });
-          print(_notifications);
-          NotificationService().showNotification(title: 'New Detection!', body: 'Press to go to app.');
+          //print(_notifications);
           getTokenAndFetchWarnings(); // Fetch the latest warning when notifications update
         }
       }
