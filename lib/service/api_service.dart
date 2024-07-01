@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:safe_forest_mobile/model/warning.dart';
 
 class ApiService {
-  static const String _baseUrl = 'http://192.168.1.182:8080/api';
+  static const String _baseUrl = 'http://192.168.1.177:8080/api';
 
   Future<List<dynamic>> fetchUsers() async {
     final response = await http.get(Uri.parse('$_baseUrl/users'));
