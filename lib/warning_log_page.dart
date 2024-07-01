@@ -77,10 +77,6 @@ class _WarningLogPageState extends State<WarningLogPage> {
         final List<dynamic> detections = decodedData['detections'];
         List<Warning> fetchedWarnings = detections.map((item) => Warning.fromJson(item)).toList();
 
-        /*fetchedWarnings.forEach((warning) {
-          print('Fetched Warning: ${warning.cameraId}, ${warning.date}, ${warning.imageUrl}');
-        });*/
-
         setState(() {
           warnings = fetchedWarnings;
           isLoading = false;
@@ -120,7 +116,7 @@ class _WarningLogPageState extends State<WarningLogPage> {
           ? Center(child: Text(errorMessage!))
           : ListView(
         controller: _scrollController,
-        children: warnings.map((warning) => WarningTile(warning: warning)).toList(),
+        children: warnings.map((warning) => WarningTile(warning: warning)).toList().reversed.toList(),
       ),
     );
   }
