@@ -60,7 +60,7 @@ class AboutPage extends StatelessWidget {
   }
 
   Future<void> _launchURL() async {
-    const url = 'https://www.google.com';
+    const url = 'https://safeforest-prod.azurewebsites.net/';
     if (!await launch(url)) {
       throw 'Could not launch $url';
     }
