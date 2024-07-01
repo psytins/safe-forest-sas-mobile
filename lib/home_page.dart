@@ -71,12 +71,8 @@ class _HomePageState extends State<HomePage> {
           setState(() {
             _notifications = newNotifications;
           });
-          print('Notifications updated: $_notifications');
-
           // Show notification when updates are detected
-          NotificationService().showNotification(title: 'Sample title', body: 'It works!');
-
-          print("tried to do notification");
+          NotificationService().showNotification(title: 'New Detection!', body: 'Press to go to app.');
         }
       }
     } catch (e) {
